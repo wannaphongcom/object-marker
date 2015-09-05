@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!C:\py34\python.exe
  
 ###############################################################################
 # Name      : ObjectMarker.py
@@ -61,7 +61,7 @@ def read_rect_table() :
                 rect = tuple(tokens[i * 4 + 2 : i * 4 + 6])
                 rect = tuple([int(v) for v in rect])
                 rect_table[pic_name].add(rect)
-        print('Reading %d objects in %d images' % (cnt_all_rects, len(lines)))
+        print(('Reading %d objects in %d images' % (cnt_all_rects, len(lines))))
 
     if os.path.exists(background_file_name) :
         fin = open(background_file_name)
@@ -71,7 +71,7 @@ def read_rect_table() :
 
 def write_rect_table() :
     fout = open(table_file_name, 'w')
-    for (f, rect_set) in rect_table.iteritems() :
+    for (f, rect_set) in rect_table.items() :
         if len(rect_set) == 0 :
             continue
         fout.write(f + '  ' + str(len(rect_set)))
@@ -109,7 +109,7 @@ def redraw() :
 
     # redraw old rect
     pen_width = 4
-    if rect_table.has_key(current_img_file_name) :
+    if current_img_file_name in rect_table :
         rects_in_table = rect_table[current_img_file_name]
         for r in rects_in_table :
             cv2.rectangle(image2, (r[0], r[1]), (r[0] + r[2], r[1] + r[3]), (0,255,0),pen_width)
@@ -126,7 +126,7 @@ def redraw() :
     cv2.imshow(window_name, image2)
 
 def remove_rect(x, y):
-    if not rect_table.has_key(current_img_file_name) :
+    if current_img_file_name not in rect_table :
         return
 
     rects_contain_xy = set()
@@ -244,7 +244,7 @@ def main():
         # <q>     = 113     exit program
         # <s>     = 115     save rect table
         # <x>     = 136     skip image
-        iKey = cv.WaitKey(0) % 255
+        iKey = cv2.waitKey(0) % 255
         # This is ugly, but is actually a simplification of the C++.
         #sys.stderr.write(str(iKey) + '\n')
         if draging :
@@ -281,7 +281,7 @@ def main():
             sys.stderr.write("Skipped %s.\n" % current_file_index)
         
 if __name__ == '__main__':
-    print(sys.argv)
+    print((sys.argv))
     if (len(sys.argv) != 4):
         sys.stderr.write("usage: %s objects.txt background.txt 'image_glob_pattern'\n" % sys.argv[0])
         sys.stderr.write("example: %s objects.txt background.txt 'training_img/*.png'\n" % sys.argv[0])
@@ -292,4 +292,3 @@ if __name__ == '__main__':
 
         read_rect_table()
         main()
-
