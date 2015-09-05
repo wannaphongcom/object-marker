@@ -246,10 +246,11 @@ def main():
         # <x>     = 136     skip image
         iKey = cv2.waitKey(0) % 255
         # This is ugly, but is actually a simplification of the C++.
-        #sys.stderr.write(str(iKey) + '\n')
+        sys.stderr.write(str(iKey) + '\n')
         if draging :
             continue
 
+        print(current_file_index)
         if iKey == 81:
             current_file_index -= 1
             if current_file_index == -1 :
@@ -261,7 +262,7 @@ def main():
                 current_file_index = 0
             clear_roi()
         elif iKey == 113:
-            cv.DestroyWindow(window_name)
+            cv2.imshow(window_name)
             return 0
         elif iKey == 97:
             rect_table.setdefault(current_img_file_name, set()).add((roi_x0, roi_y0, roi_x1 - roi_x0, roi_y1 - roi_y0)) 
