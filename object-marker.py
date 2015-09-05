@@ -8,18 +8,23 @@
 # Description   : Object marker utility to be used with OpenCV Haar training. 
 #         Tested on Ubuntu Linux 10.04 with OpenCV 2.1.0.
 # Usage     : python ObjectMarker.py outputfile inputdirectory
+# forked from yocox/object-marker
+# Wannaphong
+# python3.wannaphong
 ###############################################################################
  
-import cv
+# import cv
+import cv2
 import sys
 import os
 import glob
+import copy
  
 IMG_SIZE = (300,300)
 IMG_CHAN = 3
-IMG_DEPTH = cv.IPL_DEPTH_8U
-current_image = cv.CreateImage(IMG_SIZE, IMG_DEPTH, IMG_CHAN)
-image2 = cv.CreateImage(IMG_SIZE, IMG_DEPTH, IMG_CHAN) 
+IMG_DEPTH = cv2.CV_8U # cv2.CV_8U instead of cv.IPL_DEPTH_8U
+current_image = cv.CreateImage(IMG_SIZE, IMG_DEPTH, IMG_CHAN)  # ?
+image2 = cv.CreateImage(IMG_SIZE, IMG_DEPTH, IMG_CHAN)  # ?
 has_roi = False
 roi_x0 = 0
 roi_y0 = 0
@@ -54,7 +59,7 @@ def read_rect_table() :
                 rect = tuple(tokens[i * 4 + 2 : i * 4 + 6])
                 rect = tuple([int(v) for v in rect])
                 rect_table[pic_name].add(rect)
-        print 'Reading %d objects in %d images' % (cnt_all_rects, len(lines))
+        print('Reading %d objects in %d images' % (cnt_all_rects, len(lines)))
 
     if os.path.exists(background_file_name) :
         fin = open(background_file_name)
@@ -98,25 +103,25 @@ def redraw() :
     global cur_mouse_x
     global cur_mouse_y
     #Redraw ROI selection
-    image2 = cv.CloneImage(current_image)
+    image2 = copy.copy(current_image)
 
     # redraw old rect
     pen_width = 4
     if rect_table.has_key(current_img_file_name) :
         rects_in_table = rect_table[current_img_file_name]
         for r in rects_in_table :
-            cv.Rectangle(image2, (r[0], r[1]), (r[0] + r[2], r[1] + r[3]), cv.CV_RGB(0,255,0),pen_width)
+            cv2.rectangle(image2, (r[0], r[1]), (r[0] + r[2], r[1] + r[3]), (0,255,0),pen_width)
 
     # redraw new rect
     if has_roi :
-        cv.Rectangle(image2, (roi_x0, roi_y0), (cur_mouse_x, cur_mouse_y), cv.CV_RGB(255,0,255),pen_width)
+        cv2.rectangle(image2, (roi_x0, roi_y0), (cur_mouse_x, cur_mouse_y), (255,0,255),pen_width)
 
     # draw background
     if current_img_file_name in background_files :
-        cv.Line(image2, (0, 0), (image2.width, image2.height), cv.CV_RGB(255, 0, 0))
-        cv.Line(image2, (0, image2.height), (image2.width, 0), cv.CV_RGB(255, 0, 0))
+        cv2.line(image2, (0, 0), (image2.width, image2.height),(255, 0, 0))
+        cv2.line(image2, (0, image2.height), (image2.width, 0),(255, 0, 0))
 
-    cv.ShowImage(window_name, image2)
+    cv2.imshow(window_name, image2)
 
 def remove_rect(x, y):
     if not rect_table.has_key(current_img_file_name) :
@@ -154,12 +159,12 @@ def on_mouse(event, x, y, flag, params):
     cur_mouse_x = x
     cur_mouse_y = y
 
-    if (event == cv.CV_EVENT_LBUTTONDOWN):
+    if (event == cv2.EVENT_LBUTTONDOWN):
         draging = True
         has_roi = True
         roi_x0 = x
         roi_y0 = y
-    elif (event == cv.CV_EVENT_LBUTTONUP):
+    elif (event == cv2.EVENT_LBUTTONUP):
         draging = False
         has_roi = True
         roi_x1 = x
@@ -171,11 +176,11 @@ def on_mouse(event, x, y, flag, params):
         if roi_y1 < roi_y0 :
             roi_y0, roi_y1 = roi_y1, roi_y0 
 
-    elif (event == cv.CV_EVENT_RBUTTONDOWN):
+    elif (event == cv2.EVENT_RBUTTONDOWN):
         clear_roi()
         redraw()
 
-    elif (event == cv.CV_EVENT_MOUSEMOVE):
+    elif (event == cv2.EVENT_MOUSEMOVE):
         if draging:
             redraw()
  
@@ -193,15 +198,15 @@ def main():
     
     files = glob.glob(image_file_glob)
     if len(files) == 0 :
-        print "No files match glob pattern"
+        print("No files match glob pattern")
         return
  
     files = [os.path.abspath(f) for f in files]
     files.sort()
  
     # init GUI
-    cv.NamedWindow(window_name, 1)
-    cv.SetMouseCallback(window_name, on_mouse, None)
+    cv2.namedWindow(window_name)
+    cv2.setMouseCallback(window_name, on_mouse)
  
     sys.stderr.write("Opening directory...")
     # init output of rectangles to the info file
@@ -218,7 +223,7 @@ def main():
         sys.stderr.write("Loading current_image (%d/%d) %s...\n" % (current_file_index + 1, len(files), current_img_file_name))
  
         try: 
-            current_image = cv.LoadImage(current_img_file_name, 1)
+            current_image = cv2.imread(current_img_file_name, 1)
         except IOError: 
             sys.stderr.write("Failed to load current_image %s.\n" % current_img_file_name)
             return -1
