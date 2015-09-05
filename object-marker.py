@@ -281,7 +281,7 @@ def main():
             sys.stderr.write("Skipped %s.\n" % current_file_index)
         
 if __name__ == '__main__':
-    print sys.argv
+    print(sys.argv)
     if (len(sys.argv) != 4):
         sys.stderr.write("usage: %s objects.txt background.txt 'image_glob_pattern'\n" % sys.argv[0])
         sys.stderr.write("example: %s objects.txt background.txt 'training_img/*.png'\n" % sys.argv[0])
