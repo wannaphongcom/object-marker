@@ -106,7 +106,7 @@ def redraw() :
     global cur_mouse_y
     #Redraw ROI selection
     image2 = copy.copy(current_image)
-
+    height, width, channels = image2.shape
     # redraw old rect
     pen_width = 4
     if current_img_file_name in rect_table :
@@ -120,8 +120,8 @@ def redraw() :
 
     # draw background
     if current_img_file_name in background_files :
-        cv2.line(image2, (0, 0), (image2.width, image2.height),(255, 0, 0))
-        cv2.line(image2, (0, image2.height), (image2.width, 0),(255, 0, 0))
+        cv2.line(image2, (0, 0), (width, height),(255, 0, 0))
+        cv2.line(image2, (0, height), (width, 0),(255, 0, 0))
 
     cv2.imshow(window_name, image2)
 
