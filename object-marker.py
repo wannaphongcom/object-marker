@@ -207,7 +207,7 @@ def main():
     files.sort()
  
     # init GUI
-    cv2.namedWindow(window_name)
+    cv2.namedWindow(window_name,1)
     cv2.setMouseCallback(window_name, on_mouse)
  
     sys.stderr.write("Opening directory...")
@@ -292,3 +292,4 @@ if __name__ == '__main__':
 
         read_rect_table()
         main()
+
