@@ -10,7 +10,7 @@
 # Usage     : python ObjectMarker.py outputfile inputdirectory
 # forked from yocox/object-marker
 # Wannaphong
-# python3.wannaphong
+# python3.wannaphong.com
 ###############################################################################
  
 # import cv
@@ -19,12 +19,14 @@ import sys
 import os
 import glob
 import copy
+import numpy as np
  
 IMG_SIZE = (300,300)
 IMG_CHAN = 3
 IMG_DEPTH = cv2.CV_8U # cv2.CV_8U instead of cv.IPL_DEPTH_8U
 current_image = cv.CreateImage(IMG_SIZE, IMG_DEPTH, IMG_CHAN)  # ?
-image2 = cv.CreateImage(IMG_SIZE, IMG_DEPTH, IMG_CHAN)  # ?
+current_image = np.zeros(IMG_SIZE, np.uint8)
+image2 = np.zeros(IMG_SIZE, np.uint8) # ?
 has_roi = False
 roi_x0 = 0
 roi_y0 = 0
